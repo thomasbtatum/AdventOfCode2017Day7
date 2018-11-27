@@ -1956,6 +1956,73 @@ xszevpx (8)";
                     new[] { Environment.NewLine },
                     StringSplitOptions.None);
 
+            //Part1(lines);
+            Part2(lines);
+
+            
+
+        }
+
+        private static void Part2(string[] lines)
+        {
+
+            var nodes = lines.Select(s => new Node(s)).ToList<Node>();
+            int x = 1;
+
+            //populate all child Node weights from the end of the line
+            foreach (var node in nodes.Where(c => c.ChildNodes != null))
+            {
+                    
+                foreach (var child in node.ChildNodes)
+                {
+                    var childNodeArrayOfOne = nodes.Where(s => s.Name == child.Name).ToArray();
+                    if (childNodeArrayOfOne.Any())
+                    {
+                        if (child.TotalWeight == -1)
+                        {
+                            break;
+                        }
+                        else
+                        {
+                            child.Weight += childNodeArrayOfOne[0].Weight;
+                        }
+                    }
+                }
+            }
+
+            while (nodes.Where(s => s.TotalWeight == 0 && s.ChildNodes.Any() && s.ChildNodes[0].TotalWeight > -1).Any())
+            {
+                foreach(var node in nodes.Where(s => s.ChildNodes.Any(c => c.Weight == 0)).ToList())
+                {
+                    if(node.ChildNodes.Any() && node.ChildNodes[0].Weight > 0 && node.TotalWeight == 0)
+                    {
+
+                    }
+                }
+            }
+
+            //populate all total weights
+            foreach (var node in nodes)
+            {
+                if (node.ChildNodes != null)
+                {
+                    foreach (var child in node.ChildNodes)
+                    {
+                        
+                        node.TotalWeight += child.Weight;
+
+                    }
+                    node.TotalWeight += node.Weight;
+                }
+            }
+
+
+            x = 1;
+
+        }
+
+        private static void Part1(string[] lines)
+        {
             var knownChildren = new HashSet<string>();
             //add children
             foreach (var line in lines)
@@ -1988,7 +2055,6 @@ xszevpx (8)";
                 }
 
             }
-
         }
     }
 }
