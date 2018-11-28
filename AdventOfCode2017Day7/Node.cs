@@ -9,9 +9,10 @@ namespace AdventOfCode2017Day7
 {
     public class Node
     {
-        public string Name { get; set; }
+        public string Id { get; set; }
         public int Weight { get; set; }
         public Node[] ChildNodes { get; set; }
+        public Node Parent { get; set; }
         //-1 if the child is the end of the lineage
         public int TotalWeight { get; set; }
 
@@ -22,7 +23,7 @@ namespace AdventOfCode2017Day7
             //comes in with name(weight) -> child1, child2, child3...childN
             //the -> and beyond are optional.
             var firstSpaceIndex = nodeLine.IndexOf(" ");
-            Name = nodeLine.Substring(0, firstSpaceIndex);
+            Id = nodeLine.Substring(0, firstSpaceIndex);
 
             var resultString = Regex.Match(nodeLine, @"(?<=\().+?(?=\))").Value;
             Weight = Convert.ToInt32(resultString);
@@ -33,7 +34,7 @@ namespace AdventOfCode2017Day7
                 var childList = new List<Node>();
                 foreach (var childName in childNodesNames)
                 {
-                    childList.Add(new Node() { Name = childName });
+                    childList.Add(new Node() { Id = childName, Parent = this });
                 }
                 ChildNodes = childList.ToArray();
             } else
@@ -41,12 +42,5 @@ namespace AdventOfCode2017Day7
                 TotalWeight = -1;
             }
         }
-    }
-
-    public class ChildNode
-    {
-        public string Name { get; set; }
-        public int Weight { get; set; }
-
     }
 }

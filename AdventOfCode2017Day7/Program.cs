@@ -1963,7 +1963,83 @@ xszevpx (8)";
 
         }
 
+
         private static void Part2(string[] lines)
+        {
+            Node rootNode = null;
+            var nodes = lines.Select(s => new Node(s)).ToList<Node>();
+
+            var parents = nodes.Where(s => s.ChildNodes != null).ToList();
+            var children = nodes.Where(s => s.ChildNodes == null).ToList();
+
+            //go through the childnodes on the parent nodes and fill in weights
+            foreach (var parent in parents)
+            {
+                foreach (var child in parent.ChildNodes)
+                {
+                    var foundChild = children.SingleOrDefault(c => c.Id == child.Id);
+                    if(foundChild != null)
+                    {
+                        child.Weight = foundChild.Weight;
+                        child.TotalWeight = -1;
+                    }
+                }
+            }
+
+            //go through and copy parents of parents weights in also
+            foreach (var parent in parents)
+            {
+                foreach (var child in parent.ChildNodes)
+                {
+                    var p = nodes.SingleOrDefault(n => n.Id == child.Id);
+                    child.Weight = p.Weight;
+                }
+            }
+
+            var parentsNeedparents = nodes.Where(s => s.ChildNodes != null && s.ChildNodes[0].TotalWeight != -1).ToList();
+            //go through the copy of parent nodes and mark parents
+            //var parentCopy = new List<Node>(parents);
+            foreach (var parent in parentsNeedparents)
+            {
+                foreach (var child in parent.ChildNodes)
+                {
+                    var p = nodes.SingleOrDefault(n => n.Id == child.Id);
+                    p.Parent = parent;
+                }
+
+            }
+
+            //var whatsup = nodes.Where(s => s.ChildNodes != null && s.Parent == null).ToList();
+            rootNode = nodes.SingleOrDefault(s => s.ChildNodes != null && s.Parent == null && s.ChildNodes[0].TotalWeight > -1);
+            GenerateTotalWeights(rootNode, nodes);
+            int x = 1;
+
+
+
+        }
+
+        static void GenerateTotalWeights(Node rootNode, List<Node> nodes)
+        {
+            //recursion check
+            if (rootNode.ChildNodes == null)
+                return;
+
+            foreach (var child in rootNode.ChildNodes)
+            {
+                rootNode.TotalWeight += child.Weight;
+                var childAsParent = nodes.SingleOrDefault(s => s.Id == child.Id && s.ChildNodes != null);
+                if (childAsParent != null)
+                {
+                    GenerateTotalWeights(childAsParent, nodes);
+                    child.TotalWeight = childAsParent.TotalWeight;
+                }
+            }
+            rootNode.TotalWeight += rootNode.Weight;
+
+        }
+
+
+        private static void Part3(string[] lines)
         {
 
             var nodes = lines.Select(s => new Node(s)).ToList<Node>();
@@ -1975,7 +2051,7 @@ xszevpx (8)";
                     
                 foreach (var child in node.ChildNodes)
                 {
-                    var childNodeArrayOfOne = nodes.Where(s => s.Name == child.Name).ToArray();
+                    var childNodeArrayOfOne = nodes.Where(s => s.Id == child.Id).ToArray();
                     if (childNodeArrayOfOne.Any())
                     {
                         if (child.TotalWeight == -1)
