@@ -1970,18 +1970,45 @@ xszevpx (8)";
             Node rootNode = null;
             var nodes = lines.Select(s => InputStringUtil.BuildNode(s)).ToList();
 
+            //loop through and switch out placeholder child nodes with 
+            //actual nodes and make parent references
             foreach (var node in nodes.Where(n => !n.ChildNode))
             {
                 foreach (var child in node.ChildNodes)
                 {
-
-                    var actualNode = 
-
+                    var realNode = nodes.Single(s => s.Id == child.Id);
+                    realNode.Parent = node;
+                    node.ChildNodes = new List<Node>(node.ChildNodes) { realNode }.ToArray();
                 }
-                
 
+                //remove the ones that were placeholders
+                node.ChildNodes = new List<Node>(node.ChildNodes.Where(s => !s.Placeholder)).ToArray();
+            }
+
+            //At this stage - the only node left with no parent is the root node
+            rootNode = nodes.Single(s => s.Parent == null);
+
+            //loop through the child nodes and move up doing totals
+            foreach (var child in nodes.Where(n =>n.ChildNode))
+            {
+                var localNode = child;
+                while(localNode.Parent != null)
+                {
+                    if(localNode.Parent.TotalWeight == 0)
+                    {
+                        foreach (var sib in localNode.Parent.ChildNodes)
+                        {
+                            localNode.Parent.TotalWeight += (sib.ChildNode)?sib.Weight:sib.TotalWeight;
+                        }
+                        localNode.Parent.TotalWeight += localNode.Parent.Weight;
+                    }
+
+                    localNode = localNode.Parent;
+                }
 
             }
+            int x = 1;
+
 
             //var parents = nodes.Where(s => s.ChildNodes != null).ToList();
             //var children = nodes.Where(s => s.ChildNodes == null).ToList();

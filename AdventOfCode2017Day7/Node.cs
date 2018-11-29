@@ -45,5 +45,23 @@ namespace AdventOfCode2017Day7
                 TotalWeight = -1;
             }
         }
+
+        public override string ToString()
+        {
+            if (ChildNode)
+            {
+                return string.Format("{0} ({1})", Id, Weight);
+            } else
+            {
+                StringBuilder sb = new StringBuilder(string.Format("{0}-{1}:",Id, TotalWeight));
+                foreach (var node in ChildNodes)
+                {
+                    sb.Append(string.Format(" {0}", node.Weight));
+                }
+                return sb.ToString();
+            }
+            
+            
+        }
     }
 }

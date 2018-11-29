@@ -21,7 +21,6 @@ namespace AdventOfCode2017Day7
 
             if (nodeLine.Contains("->"))
             {
-
                 node.ChildNode = false;
 
                 var childNodesNames = nodeLine.Split('>')[1].Split(',').Select(s => s.Trim()).ToArray();
