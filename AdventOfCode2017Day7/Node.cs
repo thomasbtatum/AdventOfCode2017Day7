@@ -15,6 +15,9 @@ namespace AdventOfCode2017Day7
         public Node Parent { get; set; }
         //-1 if the child is the end of the lineage
         public int TotalWeight { get; set; }
+        public bool RootNode { get; set; }
+        public bool ChildNode { get; set; }
+        public bool Placeholder { get; set; }
 
         public Node() { }
 

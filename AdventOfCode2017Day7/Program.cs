@@ -1964,10 +1964,78 @@ xszevpx (8)";
         }
 
 
+
         private static void Part2(string[] lines)
         {
             Node rootNode = null;
-            var nodes = lines.Select(s => new Node(s)).ToList<Node>();
+            var nodes = lines.Select(s => InputStringUtil.BuildNode(s)).ToList();
+
+            foreach (var node in nodes.Where(n => !n.ChildNode))
+            {
+                foreach (var child in node.ChildNodes)
+                {
+
+                    var actualNode = 
+
+                }
+                
+
+
+            }
+
+            //var parents = nodes.Where(s => s.ChildNodes != null).ToList();
+            //var children = nodes.Where(s => s.ChildNodes == null).ToList();
+
+            ////go through the childnodes on the parent nodes and fill in weights
+            //foreach (var parent in parents)
+            //{
+            //    foreach (var child in parent.ChildNodes)
+            //    {
+            //        var foundChild = children.SingleOrDefault(c => c.Id == child.Id);
+            //        if (foundChild != null)
+            //        {
+            //            child.Weight = foundChild.Weight;
+            //            child.TotalWeight = -1;
+            //        }
+            //    }
+            //}
+
+            ////go through and copy parents of parents weights in also
+            //foreach (var parent in parents)
+            //{
+            //    foreach (var child in parent.ChildNodes)
+            //    {
+            //        var p = nodes.SingleOrDefault(n => n.Id == child.Id);
+            //        child.Weight = p.Weight;
+            //    }
+            //}
+
+            //var parentsNeedparents = nodes.Where(s => s.ChildNodes != null && s.ChildNodes[0].TotalWeight != -1).ToList();
+            ////go through the copy of parent nodes and mark parents
+            ////var parentCopy = new List<Node>(parents);
+            //foreach (var parent in parentsNeedparents)
+            //{
+            //    foreach (var child in parent.ChildNodes)
+            //    {
+            //        var p = nodes.SingleOrDefault(n => n.Id == child.Id);
+            //        p.Parent = parent;
+            //    }
+
+            //}
+
+            ////var whatsup = nodes.Where(s => s.ChildNodes != null && s.Parent == null).ToList();
+            //rootNode = nodes.SingleOrDefault(s => s.ChildNodes != null && s.Parent == null && s.ChildNodes[0].TotalWeight > -1);
+            //GenerateTotalWeights(rootNode, nodes);
+            //int x = 1;
+
+
+
+        }
+
+        private static void Part4(string[] lines)
+        {
+            Node rootNode = null;
+            var nodes = lines.Select(s => InputStringUtil.BuildNode(s)).ToList();
 
             var parents = nodes.Where(s => s.ChildNodes != null).ToList();
             var children = nodes.Where(s => s.ChildNodes == null).ToList();
