@@ -1988,25 +1988,28 @@ xszevpx (8)";
             //At this stage - the only node left with no parent is the root node
             rootNode = nodes.Single(s => s.Parent == null);
 
+            AddAllNodes(rootNode);
+
             //loop through the child nodes and move up doing totals
-            foreach (var child in nodes.Where(n =>n.ChildNode))
-            {
-                var localNode = child;
-                while(localNode.Parent != null)
-                {
-                    if(localNode.Parent.TotalWeight == 0)
-                    {
-                        foreach (var sib in localNode.Parent.ChildNodes)
-                        {
-                            localNode.Parent.TotalWeight += (sib.ChildNode)?sib.Weight:sib.TotalWeight;
-                        }
-                        localNode.Parent.TotalWeight += localNode.Parent.Weight;
-                    }
+            //WAS NOT A GOOD STRATEGY - failure...
+            //foreach (var child in nodes.Where(n =>n.ChildNode))
+            //{
+            //    var localNode = child;
+            //    while(localNode.Parent != null)
+            //    {
+            //        if(localNode.Parent.TotalWeight == 0)
+            //        {
+            //            foreach (var sib in localNode.Parent.ChildNodes)
+            //            {
+            //                localNode.Parent.TotalWeight += (sib.ChildNode)?sib.Weight:sib.TotalWeight;
+            //            }
+            //            localNode.Parent.TotalWeight += localNode.Parent.Weight;
+            //        }
 
-                    localNode = localNode.Parent;
-                }
+            //        localNode = localNode.Parent;
+            //    }
 
-            }
+            //}
             int x = 1;
 
 
@@ -2057,6 +2060,27 @@ xszevpx (8)";
 
 
 
+        }
+
+        private static void AddAllNodes(Node node)
+        {
+            if (node.ChildNodes == null)
+            {
+                node.TotalWeight = node.Weight;
+                return;
+            }
+
+            foreach (var child in node.ChildNodes)
+            {
+                AddAllNodes(child);
+            }
+
+            node.TotalWeight = node.Weight;
+
+            foreach (var child in node.ChildNodes)
+            {
+                node.TotalWeight += child.Weight;
+            }
         }
 
         private static void Part4(string[] lines)
